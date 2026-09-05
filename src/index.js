@@ -28,6 +28,7 @@ client.on("shardError", (err) => console.error("Shard error:", err));
 client.on("shardDisconnect", (event, id) => console.warn(`Shard ${id} disconnected:`, event.code, event.reason));
 client.on("shardReconnecting", (id) => console.warn(`Shard ${id} reconnecting...`));
 client.on("shardResume", (id) => console.log(`Shard ${id} resumed`));
+client.on("debug", (info) => console.log("[debug]", info));
 
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
