@@ -12,7 +12,14 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 const VOUCH_CHANNEL_ID = "1395917117945151769";
 
+const READY_TIMEOUT_MS = 30_000;
+const readyWatchdog = setTimeout(() => {
+  console.error(`Did not receive clientReady within ${READY_TIMEOUT_MS}ms, exiting so the host can restart us`);
+  process.exit(1);
+}, READY_TIMEOUT_MS);
+
 client.once("clientReady", () => {
+  clearTimeout(readyWatchdog);
   console.log(`Logged in as ${client.user.tag}`);
 });
 
