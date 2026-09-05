@@ -16,11 +16,26 @@ client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
+client.on("error", (err) => console.error("Client error:", err));
+client.on("shardError", (err) => console.error("Shard error:", err));
+client.on("shardDisconnect", (event, id) => console.warn(`Shard ${id} disconnected:`, event.code, event.reason));
+client.on("shardReconnecting", (id) => console.warn(`Shard ${id} reconnecting...`));
+client.on("shardResume", (id) => console.log(`Shard ${id} resumed`));
+
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
   if (interaction.commandName !== "vouch") return;
 
-  await interaction.reply(`please vouch <@${interaction.user.id}> in <#${VOUCH_CHANNEL_ID}>`);
+  console.log(`Received /vouch from ${interaction.user.tag} at ${new Date().toISOString()}`);
+
+  try {
+    await interaction.reply(`please vouch <@${interaction.user.id}> in <#${VOUCH_CHANNEL_ID}>`);
+    console.log("Replied successfully");
+  } catch (err) {
+    console.error("Failed to reply to /vouch:", err);
+  }
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN).catch((err) => {
+  console.error("Login failed:", err);
+});
